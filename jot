@@ -1,0 +1,145 @@
+#!/usr/bin/env node
+
+const chalk = require('chalk');
+const args = process.argv
+const readline = require('readline');
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+
+
+const adapter = new FileSync('jot-db.json')
+const db = low(adapter)
+
+// Database default fields.
+db.defaults({notes: []}).write()
+
+
+function usage() {
+
+	const usage_text = `
+	usage:
+  		jot <command> OR jot <short note>
+
+  	valid commands:
+
+  	long:     		use this to save a longer note
+  	get <id> OR get:	use without [note_id] to get all notes
+  	help:			used to print the usage guide
+	`
+	console.log(usage_text)
+}
+
+const commands = ['long', 'get', 'help']
+
+function log_err(error) {
+  console.log(chalk.red(error))
+}
+
+// Returns datetime string and the timestamp to be used as the note id.
+function get_time() {
+	let date = new Date()
+	return [date.toLocaleString(), date.getTime()]
+}
+
+function new_note(input) {
+	let note_str = ""
+	
+	input.forEach((item, index) => {
+		note_str += item + " "
+	})
+
+	datetime = get_time()
+
+	db.get('notes').push({
+		id: datetime[1],
+		timestamp: datetime[0],
+		note: note_str
+	}).write()
+	
+	console.log(chalk.green("Saved note id: []"))
+}
+
+function new_long_note() {
+	const rl = readline.createInterface({
+  		input: process.stdin,
+  		output: process.stdout
+	})
+
+	console.log(chalk.blue("Write your piece then Ctrl + C:"))
+	let text = ''
+
+	rl.on('line', (input) => {
+  		text += input + "\n"	
+	})
+
+	rl.on('SIGINT', () => {
+		datetime = get_time()
+		db.get('notes').push({
+			id: datetime[1],
+			timestamp: datetime[0],
+			note: text
+		}).write()
+		rl.close()
+		console.log(chalk.green("Saved note id: []"))
+	});
+}
+
+function get_all_notes() {
+
+	const notes = db.get('notes').value()
+  	notes.forEach(note => {
+		console.log(`${note.note}`,"\n")
+		console.log(chalk.green(`${note.id}`))
+		console.log(chalk.blue(`${note.timestamp}`))
+		console.log("---------------------")
+  	})
+}
+
+function get_node_by_id(id) {
+	let found = false
+	let found_note = []
+
+	const notes = db.get('notes').value()
+	notes.forEach(note => {
+		if (id == note.id) {
+			found = true
+			found_note = note
+		}
+	})
+
+	if (found) {
+		console.log("---------------------")
+		console.log(`${found_note.note}`,"\n")
+		console.log(chalk.green(`${found_note.id}`))
+		console.log(chalk.blue(`${found_note.timestamp}`))
+		console.log("---------------------")
+	
+	}
+	else {
+		console.log(chalk.red("Could not find note ",id))
+	}
+}
+
+//// MAIN 
+
+switch (args[2]) {
+	case 'help':
+		usage()
+		break
+	case 'long':
+		new_long_note()
+		break
+	case 'list':
+		get_all_notes()
+		break
+	case 'get':
+		get_node_by_id(args[3])
+		break
+	default:
+		if (args.length > 2) {
+			if (args.length <= 102) {
+				args.splice(0,2)
+				new_note(args)
+			}	
+		}
+}
