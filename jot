@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 
-const chalk = require('chalk');
 const args = process.argv
+const chalk = require('chalk');
 const readline = require('readline');
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 
+const jot_db_file = process.env.HOME + "/.jot/jot-db.json"
 
-const adapter = new FileSync('jot-db.json')
+//const adapter = new FileSync('jot-db.json')
+const adapter = new FileSync(jot_db_file)
 const db = low(adapter)
 
 // Database default fields.
 db.defaults({notes: []}).write()
-
 
 function usage() {
 
@@ -29,10 +30,16 @@ function usage() {
 	console.log(usage_text)
 }
 
-const commands = ['long', 'get', 'help']
+function log_err(msg) {
+	console.log(chalk.red(msg))
+}
 
-function log_err(error) {
-  console.log(chalk.red(error))
+function log_warn(msg) {
+	console.log(chalk.yellow(msg))
+}
+
+function log_success(msg) {
+	console.log(chalk.green(msg))
 }
 
 // Returns datetime string and the timestamp to be used as the note id.
@@ -42,10 +49,10 @@ function get_time() {
 }
 
 function new_note(input) {
-	let note_str = ""
+	let text = ""
 	
 	input.forEach((item, index) => {
-		note_str += item + " "
+		text += item + " "
 	})
 
 	datetime = get_time()
@@ -53,10 +60,10 @@ function new_note(input) {
 	db.get('notes').push({
 		id: datetime[1],
 		timestamp: datetime[0],
-		note: note_str
+		note: text
 	}).write()
 	
-	console.log(chalk.green("Saved note id: []"))
+	log_success("Saved note " + datetime[1])
 }
 
 function new_long_note() {
@@ -80,19 +87,20 @@ function new_long_note() {
 			note: text
 		}).write()
 		rl.close()
-		console.log(chalk.green("Saved note id: []"))
+		log_success("Saved note " + datetime[1])
 	});
 }
 
 function get_all_notes() {
 
 	const notes = db.get('notes').value()
-  	notes.forEach(note => {
-		console.log(`${note.note}`,"\n")
-		console.log(chalk.green(`${note.id}`))
-		console.log(chalk.blue(`${note.timestamp}`))
-		console.log("---------------------")
-  	})
+
+	notes.forEach(note => {
+		console.log(chalk.green(`${note.id}`), 
+			    chalk.blue(`${note.timestamp}`),
+			    " : ",
+			    `${note.note}`)
+	})
 }
 
 function get_node_by_id(id) {
@@ -114,32 +122,57 @@ function get_node_by_id(id) {
 		console.log(chalk.blue(`${found_note.timestamp}`))
 		console.log("---------------------")
 	
-	}
+	} 
 	else {
-		console.log(chalk.red("Could not find note ",id))
+		log_err("Could not find note " + id)
 	}
 }
+
+function delete_note(id_in) {
+	let note = db.get('notes')
+		.remove({id: parseInt(id_in)})
+		.write()
+
+	if (note.length != 0) {
+		log_warn("Deleted note " + id_in)
+	}
+	else {
+		log_err("Could not find note " + id_in)
+	}
+}
+
 
 //// MAIN 
 
 switch (args[2]) {
 	case 'help':
+	case '-h':
+	case '--help':	
 		usage()
 		break
-	case 'long':
-		new_long_note()
-		break
+	// TODO: Enable later
+	//case 'long':
+	//	new_long_note()
+	//	break
 	case 'list':
+	case 'ls':
 		get_all_notes()
 		break
 	case 'get':
 		get_node_by_id(args[3])
 		break
-	default:
+	case 'rm': 
+		delete_note(args[3])
+		break
+	default: 
+		// Saves the passed string as a note.
 		if (args.length > 2) {
 			if (args.length <= 102) {
 				args.splice(0,2)
 				new_note(args)
 			}	
+		} 
+		else {
+			usage()
 		}
 }
