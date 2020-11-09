@@ -8,24 +8,30 @@ const FileSync = require('lowdb/adapters/FileSync')
 
 const jot_db_file = process.env.HOME + "/.jot/jot-db.json"
 
-//const adapter = new FileSync('jot-db.json')
 const adapter = new FileSync(jot_db_file)
 const db = low(adapter)
+
+const ver = "1.0.0"
 
 // Database default fields.
 db.defaults({notes: []}).write()
 
 function usage() {
+	console.log("")
+	console.log(chalk.green("JOT"), "-", chalk.yellow("For jotting down quick notes."))
+	console.log(chalk.blue(ver))
 
 	const usage_text = `
-	usage:
-  		jot <command> OR jot <short note>
+	Usage:
+  		jot <command>
+		jot <your note>
 
-  	valid commands:
-
-  	long:     		use this to save a longer note
-  	get <id> OR get:	use without [note_id] to get all notes
-  	help:			used to print the usage guide
+  	Commands:
+		list, ls 	 : Lists all your notes
+		get <id> 	 : Displays the note with given id
+  		rm <id>  	 : Deletes the note with given id	
+  		-v, --version    : Displays version
+		help, -h, --help : Displays this help text.
 	`
 	console.log(usage_text)
 }
@@ -149,6 +155,10 @@ switch (args[2]) {
 	case '-h':
 	case '--help':	
 		usage()
+		break
+	case '-v':
+	case '--version':
+		console.log(ver)
 		break
 	// TODO: Enable later
 	//case 'long':

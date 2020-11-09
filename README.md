@@ -1,6 +1,6 @@
 # jot
 
-Jot down notes.
+For jotting down quick notes.
 
 # Installation
 
@@ -10,7 +10,7 @@ I recommend getting nvm (https://github.com/nvm-sh/nvm) and installing correct v
 
 `nvm install 15.0.1`
 
-Once you sort out the dependencies you can either just run the script where it is like `./jot` or move it to some location indexed by your PATH.
+Once you sort out the dependencies run `install` script, follow instructions.
 
 # Dependencies
 
@@ -22,4 +22,21 @@ Once you sort out the dependencies you can either just run the script where it i
 
 # Usage
 
-TODO: Put some usage stuff here.
+Type `jot help` to see the help message.
+
+```
+JOT - For jotting down quick notes.
+1.0.0
+
+        Usage:
+                jot <command>
+                jot <your note>
+
+        Commands:
+                list, ls         : Lists all your notes
+                get <id>         : Displays the note with given id
+                rm <id>          : Deletes the note with given id
+                -v, --version    : Displays version
+                help, -h, --help : Displays this help text.
+```
+

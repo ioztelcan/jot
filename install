@@ -5,6 +5,7 @@ echo "#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!"
 echo "                          WARNING                       "
 echo "      This script doesn't arrange node.js and other     "
 echo "    dependencies! You will need them for jot to work!   "
+echo "                 See README for more info               "
 echo "#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!"
 echo
 
