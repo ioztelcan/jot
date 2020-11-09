@@ -10,7 +10,7 @@ I recommend getting nvm (https://github.com/nvm-sh/nvm) and installing correct v
 
 `nvm install 15.0.1`
 
-Once you sort out the dependencies run `install` script, follow instructions.
+Once you sort out the dependencies run `./install.sh` script, follow instructions.
 
 # Dependencies
 
