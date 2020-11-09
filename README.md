@@ -40,10 +40,8 @@ JOT - For jotting down quick notes.
                 help, -h, --help : Displays this help text.
 ```
 
-![](./pics/1.png)
+![Creating and listing notes](./pics/2.png)
 
-![](./pics/2.png)
+![Deleting notes](./pics/3.png)
 
-![](./pics/3.png)
-
-![](./pics/4.png)
+![Displaying single note](./pics/4.png)
