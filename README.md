@@ -41,10 +41,13 @@ JOT - For jotting down quick notes.
 ```
 
 Creating and listing notes:
+
 ![](./pics/2.png)
 
 Deleting notes:
+
 ![](./pics/3.png)
 
 Displaying single note:
+
 ![](./pics/4.png)
