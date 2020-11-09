@@ -40,3 +40,10 @@ JOT - For jotting down quick notes.
                 help, -h, --help : Displays this help text.
 ```
 
+![](./pics/1.png)
+
+![](./pics/2.png)
+
+![](./pics/3.png)
+
+![](./pics/4.png)
